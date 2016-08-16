@@ -1,0 +1,22 @@
+This repository contains some elementary programs in Intel 8080
+assembler language, which interface with CP/M 2.2.  The programs
+are tested with an 8080/Z80 CP/M 2.2 emulator, called yaze-1.14.
+The website for downloading yaze is at:
+
+ftp://ftp.ping.de/pub/misc/emulators/yaze-1.14.tar.gz
+
+Extract the files and compile them with the inst.sh script.
+De-install with the deinst.sh script.
+
+The 8080 assembler for these programs may be downloaded
+from:
+
+http://www.autometer.de/unix4fun/z80pack/ftp/mac80.tgz
+
+See INSTALL for instructions on installing these programs.
+
+See TESTING for a description of tests.
+
+The website for this repository is at:
+
+http://aquila62.github.io

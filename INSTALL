@@ -1,0 +1,122 @@
+Unzip the zip file 8080-master.zip
+
+Change directory to 8080-master
+
+chmod 700 *.sh
+
+inst.sh
+
+------------------------------------------------
+
+Installing the yaze 8080/Z80 CP/M 2.2 emulator.
+
+Download the yaze 8080/Z80 CP/M 2.2 emulator from:
+
+ftp://ftp.ping.de/pub/misc/emulators/yaze-1.14.tar.gz
+
+Untar the tarball.
+
+tar xzf yaze-1.14.tar.gz
+
+Change directory to yaze-1.14.
+
+Run the make command.
+
+Makefile creates a program, called yaze.
+
+Run yaze.
+
+You will see the A> prompt.
+
+Type in sys and enter.
+
+That will give you a dollar prompt $>
+
+Enter the command mount b $PATH/8080-master
+
+The directory name, 8080-master, is where your 8080
+programs reside.
+
+Enter the command go.
+
+You will see the A> prompt again.
+
+Change disk drive to B:
+
+Run your tests on the B: drive.
+
+You may mount your program directory by editing
+the .yazerc file in the yaze-1.14 directory.
+
+After the mount A statement, add a mount B statement.
+
+mount B my_program_directory_path
+
+Save the .yazerc file with your changes.
+
+Run yaze.
+
+Change disk drive to B:
+
+Your programs should be on the B: disk drive.
+
+In CP/M a disk drive is represented by a letter and
+a colon.  In emulation the CP/M disk drive is a Linux
+directory, also called a Linux folder.
+
+------------------------------------------------
+
+The assembler for this repository is mac80.
+
+The website for downloading this assembler is at:
+
+http://www.autometer.de/unix4fun/z80pack/ftp/mac80.tgz
+
+Unzip and untar this source package.
+
+Change directory to mac80/src.
+
+Run make.
+
+Run make install.
+
+The make install installs mac80 and m80 in ~/bin.
+
+The make files for the 8080 assembler programs in this
+repository show you how the m80 script is invoked to
+create a .HEX file.  The hx2c.c program converts the
+m80 .HEX output file to a CP/M .COM file.  The script
+for doing this conversion is called kom.sh.
+
+Once you have run inst.sh to compile all the programs
+and edited .yazerc, you are ready to test with yaze.
+
+------------------------------------------------
+
+See README.8080 for general information about this repository.
+
+See TESTING for how to test the programs in this repository.
+
+The website for this repository is at:
+
+http://aquila62.github.io
+]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+This repository contains some elementary programs in Intel 8080
+assembler language, which interface with CP/M 2.2.  The programs
+are tested with an 8080/Z80 CP/M 2.2 emulator, called yaze-1.14.
+The website for downloading yaze is at:
+
+ftp://ftp.ping.de/pub/misc/emulators/yaze-1.14.tar.gz
+
+Extract the files and compile them with the inst.sh script.
+De-install with the deinst.sh script.
+
+http://www.autometer.de/unix4fun/z80pack/ftp/mac80.tgz
+
+See INSTALL for instructions on installing these programs.
+
+See TESTING for a description of tests.
+
+The website for this repository is at:
+
+http://aquila62.github.io

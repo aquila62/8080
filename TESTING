@@ -1,0 +1,67 @@
+Test eko.com to see how the cout and cin interface work.
+
+Usage:
+
+eko
+
+cin is a branch vector in CP/M to read one character from
+the keyboard, with wait and with no echo.  The output from
+the keyboard is returned in the A register.
+
+cout is a branch vector in CP/M to write one character to
+the console, with wrap around and scrolling.  The input to
+cout is received in the A register.
+
+----------------------------------------------------------
+
+Test ascii.com to display the ASCII character set in
+rows of 16 characters.
+
+Usage:
+
+ascii
+
+From the output display, it is easy to calculate the
+hex value of each character.  The first row begins with
+hex 020h, a space.  The last character on the first row
+is hex 02fh, a forward slash.  The next row starts with
+030h and ends with 03fh, etc.
+
+The program ends after the 7th row is displayed.
+
+----------------------------------------------------------
+
+Test hx.com to dump memory at a location in hex, specified
+by an input parameter.
+
+Usage:
+
+hx address
+
+Example:
+
+hx f000
+
+In this example, Z80 memory is dumped in hex starting at location
+0f000h.  16 bytes are dumped on each line, with the current
+address as the first word in hex.
+
+The program pauses after each line, waiting for a key to
+be pressed on the keyboard.  Hold a key down to cause the
+memory dump to proceed continuously.
+
+Terminate the program by entering CTL-Z.
+
+The address parameter defaults to zero.
+The error message for an invalid address is "X ?",
+where X is an invalid character.
+
+----------------------------------------------------------
+
+See INSTALL for installing this repository on your computer.
+
+See README.8080 for general information about this repository.
+
+This website for this repository is called
+
+http://aquila62.github.io
