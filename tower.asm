@@ -42,54 +42,6 @@
 ; LEFT, OR THERE ARE NO MOVES LEFT, AND THE SOLUTION IS REACHED.
 ;--------------------------------------------------------------
 
-MOVE1	MACRO	SRCSTK,SRCSZ,POPX,PUSHX,ALT1,ALT1
-;---------------------------------------------
-; 1 MOVES
-; THERE ARE 6 POSSIBLE 1 MOVES
-; IF THE 1 MOVE IS SUCCESSFUL, THEN THE ALTERNATE
-; MOVE IS ATTEMPTED.
-; IF THERE IS NO ALTERNATE MOVE, THEN THE
-; ALGORITHM IS COMPLETE.
-;---------------------------------------------
-; MOVE 1 DISK FROM SRC TO TGT
-;---------------------------------------------
-   PUSH PSW
-   PUSH B
-   PUSH H
-   XRA A              ; A = 0
-   STA SRCDSK         ; INITIALIZE SOURCE DISK
-   STA RETC1          ; INITIALIZE 1 MOVE RETURN CODE
-   STA RETC2          ; INITIALIZE ALTERNATE MOVE RETURN CODE
-   ; IS THE SOURCE STACK A EMPTY?
-   LXI H,SRCSTK       ; PARM1
-   MVI B,0
-   LDA  SRCSZ         ; PARM2
-   ORA A
-   JZ MV9             ; YES, RETURN CODE DEFAULTS TO ZERO
-   ; IF SOURCE STACK A IS NOT EMPTY, CHECK TO SEE IF
-   ; THE TOP OF THE A STACK IS A 1 DISK
-   MOV C,A
-   DAD B
-   MOV A,M
-   CPI 1            ; 1 DISK?
-   JNZ MV9          ; NO, DO NOT MOVE A TO B
-   STA SRCDSK       ; YES, MOVE 1 DISK FROM A TO B
-   CALL POPX        ; POP THE PARM3 STACK
-   CALL PUSHX       ; PUSH THE 1 DISK ONTO THE PARM4 STACK
-   MVI A,1
-   STA RETC1        ; SET THE 1 MOVE RETURN CODE TO ONE
-   CALL ALT1        ; PARM5
-   LDA RETC2        ; SUCCESSFUL MOVE?
-   ORA A
-   JNZ MV9          ; YES, DONE
-   CALL ALT2        ; PARM6
-MV9:
-   POP H
-   POP B
-   POP PSW
-   RET
-	ENDM
-
 KCIN   EQU 0006H       ; CP/M JUMP VECTOR FOR KEY INPUT
 KCOUT  EQU 0009H       ; CP/M JUMP VECTOR FOR CONSOLE OUTPUT
    ORG 100H            ; CP/M LOADS PROGRAM INTO TPA AT 100H
@@ -143,10 +95,6 @@ HXTBL:  DB '0123456789ABCDEF'
 STK: DS 16             ; DECIMAL NUMBER STACK
 ;---------------------------------------------------
 STRT:                  ; PROGRAM STARTS HERE
-   ;==============================================================
-   MOVE1 STKA,SZA,POPA,PUSHB,MVAC,MVCA
-   ;==============================================================
-   END
    ; INITIALIZE THE MOVE COUNTER TO ZERO
    XRA A               ; A = 0
    STA KOUNT           ; SET 16-BIT KOUNT TO ZERO
