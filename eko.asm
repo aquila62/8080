@@ -1,29 +1,29 @@
-; eko.asm - Echo ASCII keyboard characters   Version 1.0.0
-; Copyright (C) 2016 aquila62 at github.com
+; EKO.ASM - ECHO ASCII KEYBOARD CHARACTERS   VERSION 1.0.0
+; COPYRIGHT (C) 2016 AQUILA62 AT GITHUB.COM
 
-; This program is free software; you can redistribute it and/or
-; modify it under the terms of the GNU General Public License as
-; published by the Free Software Foundation; either version 2 of
-; the License, or (at your option) any later version.
+; THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+; MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+; PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF
+; THE LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
 
-; This program is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-; GNU General Public License for more details.
+; THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+; BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+; MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE
+; GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 
-; You should have received a copy of the GNU General Public License
-; along with this program; if not, write to:
+; YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+; ALONG WITH THIS PROGRAM; IF NOT, WRITE TO:
 
-   ; Free Software Foundation, Inc.
-   ; 59 Temple Place - Suite 330
-   ; Boston, MA 02111-1307, USA.
+   ; FREE SOFTWARE FOUNDATION, INC.
+   ; 59 TEMPLE PLACE - SUITE 330
+   ; BOSTON, MA 02111-1307, USA.
 
 KCIN   EQU 0006H
 KCOUT  EQU 0009H
    ORG 100H
 LP:
    CALL CIN
-   CPI 'q'
+   CPI 'Q'
    JZ EOJ
    CPI 01AH
    JZ EOJ
@@ -42,7 +42,7 @@ CIN:
    CALL IOS
    POP D
    POP B
-   ; returns character in reg a
+   ; RETURNS CHARACTER IN REG A
    RET
 COUT:
    PUSH B
