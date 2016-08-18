@@ -52,9 +52,39 @@ memory dump to proceed continuously.
 
 Terminate the program by entering CTL-Z.
 
+Press any key to continue.
+
 The address parameter defaults to zero.
 The error message for an invalid address is "X ?",
 where X is an invalid character.
+
+----------------------------------------------------------
+
+Test the Tower of Hanoi puzzle by running tower.com.
+The object of this puzzle is to move all the disks from
+stack A to stack C, using stack B as the auxiliary stack.
+See the Wikipedia article for the Tower of Hanoi puzzle.
+This program is the iterative solution to the puzzle.
+
+Usage:
+
+tower [#disks]
+
+Where #disks is 2-9.
+
+Default #disks is 3.
+
+The state is printed for every two moves.
+
+The final state is printed after only one move.
+
+Press CTL-Z to quit.
+
+Press any other key to continue.
+
+The total number of moves is (2^n) - 1.
+
+For example, for 5 disks, the total number of moves is 31.
 
 ----------------------------------------------------------
 
