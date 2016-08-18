@@ -49,6 +49,8 @@ void getdata(int len, int ofst, unsigned char *pgm)
       if (ch > 9) ch -= 7;
       if (ch < 0 || ch > 15)
          {
+	 fprintf(stderr,"getdata: error ch %d oktet %02x\n",
+	    ch, oktet);
 	 while (1)
 	    {
 	    int ch;
@@ -64,6 +66,8 @@ void getdata(int len, int ofst, unsigned char *pgm)
       if (ch > 9) ch -= 7;
       if (ch < 0 || ch > 15)
          {
+	 fprintf(stderr,"getdata: error ch %d oktet %02x\n",
+	    ch, oktet);
 	 while (1)
 	    {
 	    int ch;
@@ -265,7 +269,7 @@ int main()
 	 } /* end of .hex file */
       else if (ch == '0')
          {
-	 totlen += len;
+	 totlen = ofst + len - 0x100;
 	 getdata(len,ofst,pgm);
 	 getcksum();
 	 } /* if type zero */
