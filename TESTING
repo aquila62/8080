@@ -61,10 +61,11 @@ where X is an invalid character.
 ----------------------------------------------------------
 
 Test the Tower of Hanoi puzzle by running tower.com.
+This program uses the iterative solution to the puzzle.
+See twr.com below for the recursive solution.
 The object of this puzzle is to move all the disks from
 stack A to stack C, using stack B as the auxiliary stack.
 See the Wikipedia article for the Tower of Hanoi puzzle.
-This program is the iterative solution to the puzzle.
 
 Usage:
 
@@ -77,6 +78,35 @@ Default #disks is 3.
 The state is printed for every two moves.
 
 The final state is printed after only one move.
+
+Press CTL-Z to quit.
+
+Press any other key to continue.
+
+The total number of moves is (2^n) - 1.
+
+For example, for 5 disks, the total number of moves is 31.
+
+----------------------------------------------------------
+
+Solve the Tower of Hanoi puzzle by running twr.com.
+twr.com uses a recursive algorithm to solve the puzzle.
+See tower.com above for the iterative solution.
+The object of this puzzle is to move all the disks from
+stack A to stack C, using stack B as the auxiliary stack.
+See the Wikipedia article for the Tower of Hanoi puzzle.
+
+Usage:
+
+twr [#disks]
+
+Where #disks is 2-9.
+
+Default #disks is 3.
+
+The state is printed after every move.
+
+The final state is printed at the end.
 
 Press CTL-Z to quit.
 
