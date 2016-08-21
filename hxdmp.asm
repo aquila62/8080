@@ -1,0 +1,444 @@
+; HXDMP.ASM - DUMP A FILE IN HEX AND ASCII   VERSION 1.0.0
+; COPYRIGHT (C) 2016 AQUILA62 AT GITHUB.COM
+
+; THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+; MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+; PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF
+; THE LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
+
+; THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+; BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+; MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE
+; GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+; YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+; ALONG WITH THIS PROGRAM; IF NOT, WRITE TO:
+
+   ; FREE SOFTWARE FOUNDATION, INC.
+   ; 59 TEMPLE PLACE - SUITE 330
+   ; BOSTON, MA 02111-1307, USA.
+
+;---------------------------------------------------------
+; THIS PROGRAM WAS INSPIRED BY THE DIGITAL RESEARCH SAMPLE
+; FILE COPY PROGRAM.
+;
+; IT HASN BEEN MODIFIED TO DUMP A FILE IN HEX AND ASCII.
+;
+; AT THE CCP LEVEL, THE COMMAND USAGE:
+;
+; HXDMP A:X.Y
+;
+; EXAMPLE:
+;
+; HXDMP HX.COM
+;
+; THE PROGRAM PAUSES AFTER EVERY 8 LINES OF OUTPUT
+;
+; PRESS CTL-Z TO QUIT
+;---------------------------------------------------------
+
+KCIN    EQU 0006H     ; KEYBOARD INPUT ROUTINE
+KCOUT   EQU 0009H     ; CONSOLE OUTPUT ROUTINE
+BOOT    EQU 0000H     ; SYSTEM REBOOT
+BDOS    EQU 0005H     ; BDOS ENTRY POINT
+FCB1    EQU 005CH     ; FIRST FILE NAME
+SFCB    EQU FCB1      ; SOURCE FCB
+DBUFF   EQU 0080H     ; DEFAULT BUFFER
+TPA     EQU 0100H     ; BEGINNING OF TPA TRANSIENT PROGRAM AREA
+;
+PRINTF  EQU 9         ; PRINT BUFFER FUNC#
+OPENF   EQU 15        ; OPEN FILE FUNC#
+CLSF    EQU 16        ; CLOSE FILE FUNC#
+DLTF    EQU 19        ; DELETE FILE FUNC#
+READF   EQU 20        ; SEQUENTIAL READ FUNC#
+WRTF    EQU 21        ; SEQUENTIAL WRITE FUNC#
+MAKEF   EQU 22        ; MAKE FILE FUNC#  (CREATE FILE)
+;
+	ORG TPA            ; BEGINNING OF TPA
+	JMP STRT
+;
+; CONSOLE MESSAGES
+;
+NOFILE:
+	DB 'FILE NOT FOUND.$'
+	DB 0
+HXTBL:  DB '0123456789ABCDEF'
+	DB 0,0,0,0
+;
+; DATA AREAS
+;
+ADDR:	DW 0,0
+OFST:	DW 0,0,0,0
+     	DW 0,0,0,0
+STRT:
+	LXI SP,STACK+254   ; SET LOCAL STACK
+;
+; SOURCE FCB IS READY
+;
+	LXI D,SFCB         ; SOURCE FILE
+	CALL OPEN          ; ERROR IF 255
+	LXI D,NOFILE       ; READY MESSAGE
+	INR A              ; 255 BECOMES 0
+	CPI 0H
+	JZ FINIS           ; DONE IF NO FILE
+;
+; SOURCE FILE OPEN
+; DUMP IN HEX UNTIL END OF FILE ON SOURCE
+; END OF FILE IS A READ LENGTH OF ZERO
+;
+COPY:
+	LXI D,SFCB         ; SOURCE
+	CALL READ          ; READ NEXT RECORD
+	CPI 0H             ; END OF FILE?
+	JNZ BOOT           ; REBOOT CP/M
+;
+; NOT END OF FILE, DUMP THE RECORD WITH 8 LINES OF HEX
+;
+	CALL DMP
+	CALL CIN
+	CPI 01AH        ; INPUT KEY = CTL-Z?
+	JNZ COPY        ; NO, CONTINUE HEX DUMP
+	JMP BOOT        ; YES, REBOOT CP/M
+;
+; WRITE MESSAGE GIVEN IN DE, REBOOT
+;
+FINIS:
+	MVI C,PRINTF
+	CALL BDOS          ; WRITE MESSAGE
+	JMP BOOT           ; REBOOT SYSTEM
+;
+; SYSTEM INTERFACE SUBROUTINES
+; (ALL RETURN DIRECTLY FROM BDOS)
+;
+OPEN:
+	MVI C,OPENF
+	JMP BDOS
+;
+CLOSE:
+	MVI C,CLSF
+	JMP BDOS
+;
+DELETE:
+	MVI C,DLTF
+	JMP BDOS
+;
+READ:
+	MVI C,READF
+	JMP BDOS
+;
+WRITE:
+	MVI C,WRTF
+	JMP BDOS
+;
+MAKE:
+	MVI C,MAKEF
+	JMP BDOS
+;
+; DUMP 8 LINES IN HEX
+;
+DMP:
+	PUSH PSW
+	PUSH B
+	PUSH H
+	MVI C,8H
+	LXI H,DBUFF
+DMP2:
+	CALL HXMEM
+	MOV A,L
+	ADI 10H
+	MOV L,A
+	DCR C
+	MOV A,C
+	CPI 0H
+	JNZ DMP2
+	POP H
+	POP B
+	POP PSW
+	RET
+;
+; MEMORY DUMP   HL=ADDR TO DUMP
+;
+HXMEM:
+	PUSH PSW
+	PUSH B
+	PUSH H
+	SHLD ADDR
+	CALL PUTOFST
+	MVI C,10H
+XMEM2:
+	MOV A,M
+	INX H
+	CALL PUTHEX
+	DCR C
+	MOV A,C
+	CPI 0CH 
+	JNZ XMEM6
+	CALL PUTSPC
+	JMP XMEM2
+XMEM6:
+	CPI 8H
+	JNZ XMEM7
+	CALL PUTSPC
+	CALL PUTSPC
+	JMP XMEM2
+XMEM7:
+	CPI 4H
+	JNZ XMEM8
+	CALL PUTSPC
+	JMP XMEM2
+XMEM8:
+	CPI 0H
+	JNZ XMEM2
+	CALL PUTSPC
+	CALL PUTSPC
+	CALL PUTAST         ; PRINT *
+	LHLD ADDR
+	MVI C,10H
+XMEM3:
+	; PRINT ONLY 020H TO 07EH IN ASCII
+	; THE OTHER VALUES ARE WHITE SPACE
+	MOV A,M
+	INX H
+	CPI 020H
+	JM XMEM4
+	CPI 07FH
+	JP XMEM4
+	CALL COUT
+	JMP XMEM5
+XMEM4:
+	CALL PUTSPC     ; OTHERWISE PRINT SPACE
+XMEM5:
+	DCR C
+	JNZ XMEM3
+	CALL PUTAST
+	CALL PUTEOL
+	POP H
+	POP B
+	POP PSW
+	RET
+;
+; PRINT OFFSET IN FILE IN HEX BIG ENDIAN FORMAT
+;
+PUTOFST:
+	PUSH PSW
+	PUSH B
+	PUSH H
+	LXI H,OFST+2
+	MVI C,3H
+POFS2:
+	MOV A,M
+	CALL PUTHEX
+	DCX H
+	DCR C
+	JNZ POFS2
+	CALL PUTSPC
+	CALL PUTSPC
+	; ADD 16 TO OFFSET
+	LHLD OFST
+	MVI C,10H
+	MVI B,0
+	DAD B
+	SHLD OFST
+	POP H
+	POP B
+	POP PSW
+	RET
+;
+; PRINT A REGISTER IN HEX
+;
+PUTHXA:
+   CALL PUTHEX
+   CALL PUTSPC
+   RET
+;
+; PRINT BC REGISTER IN HEX
+;
+PUTBC:
+   PUSH PSW
+   PUSH B
+   MOV A,B
+   CALL PUTHEX
+   MOV A,C
+   CALL PUTHEX
+   CALL PUTSPC
+   POP B
+   POP PSW
+   RET
+;
+; PRINT HL REGISTER IN HEX
+;
+PUTHL:
+   PUSH PSW
+   PUSH H
+   MOV A,H
+   CALL PUTHEX
+   MOV A,L
+   CALL PUTHEX
+   CALL PUTSPC
+   POP H
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT A REGISTER IN HEXADECIMAL
+;----------------------------------------------------------
+PUTHEX:
+   PUSH PSW
+   PUSH B
+   MOV B,A     ; SAVE A REG IN B REG
+   ; SHIFT A REGISTER 4 BITS TO RIGHT
+   ; 8080 DOES NOT HAVE A SHIFT INSTRUCTION
+   STC         ; SET CARRY TO 1
+   CMC         ; COMPLEMENT CARRY TO ZERO
+   RAR         ; ROLL RIGHT 1 BIT WITH ZERO CARRY
+   ;---------------
+   STC
+   CMC
+   RAR
+   ;---------------
+   STC
+   CMC
+   RAR
+   ;---------------
+   STC
+   CMC
+   RAR
+   CALL PUTNBL      ; PRINT THE HIGH ORDER 4 BITS IN HEX
+   MOV A,B          ; RESTORE A REG
+   ANI 0FH          ; ISOLATE LOWER ORDER 4 BITS
+   CALL PUTNBL      ; PRINT THE LOW ORDER 4 BITS IN HEX
+   POP B
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT 4-BIT NYBBLE IN HEXADECIMAL
+; THE 8080 DOES NOT HAVE THE XLAT INSTRUCTION
+;----------------------------------------------------------
+PUTNBL:
+   PUSH PSW
+   PUSH B
+   PUSH H
+   MVI B,0            ; BC IS INDEX TO HEX TABLE
+   MOV C,A
+   LXI H,HXTBL        ; HL POINTS TO HEX TABLE
+   DAD B              ; HL = HXTBL[BC]
+   MOV A,M            ; LOAD ASCII CHARACTER FROM HEX TABLE
+   CALL COUT          ; PRINT ASCII HEX CHARACTER
+   POP H
+   POP B
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT \R\N END OF LINE SEQUENCE
+;----------------------------------------------------------
+PUTEOL:
+   PUSH PSW
+   MVI A,13          ; PRINT CARRIAGE RETURN
+   CALL COUT
+   MVI A,10          ; PRINT LINE FEED
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT ONE SPACE
+;----------------------------------------------------------
+PUTSPC:
+   PUSH PSW
+   MVI A,020H
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT ASTERISK FOLLOWED BY ONE SPACE
+;----------------------------------------------------------
+PUTAST:
+   PUSH PSW
+   MVI A,'*'
+   CALL COUT
+   MVI A,20H
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT X FOLLOWED BY ONE SPACE, FOR DEBUGGING
+;----------------------------------------------------------
+PUTX:
+   PUSH PSW
+   MVI A,'X'
+   CALL COUT
+   MVI A,20H
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT Y FOLLOWED BY ONE SPACE, FOR DEBUGGING
+;----------------------------------------------------------
+PUTY:
+   PUSH PSW
+   MVI A,'Y'
+   CALL COUT
+   MVI A,20H
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; PRINT Z FOLLOWED BY ONE SPACE, FOR DEBUGGING
+;----------------------------------------------------------
+PUTZ:
+   PUSH PSW
+   MVI A,'Z'
+   CALL COUT
+   MVI A,20H
+   CALL COUT
+   POP PSW
+   RET
+;----------------------------------------------------------
+; READ KEYBOARD WITH WAIT, WITHOUT ECHO
+;----------------------------------------------------------
+CIN:
+   PUSH B
+   PUSH D
+   LXI D,KCIN
+   CALL IOS
+   POP D
+   POP B
+   ; RETURNS CHARACTER IN REG A
+   RET
+;----------------------------------------------------------
+; PRINT A REGISTER IN ASCII TO CONSOLE FOLLOWED BY
+; PRINTING ONE SPACE
+;----------------------------------------------------------
+COUTSPC:
+   CALL COUT
+   CALL PUTSPC
+   RET
+;----------------------------------------------------------
+; PRINT A REGISTER IN ASCII TO CONSOLE
+;----------------------------------------------------------
+COUT:
+   PUSH PSW
+   PUSH B
+   PUSH D
+   PUSH H
+   MOV C,A
+   LXI D,KCOUT
+   CALL IOS
+   POP H
+   POP D
+   POP B
+   POP PSW
+   RET
+;----------------------------------------------------------
+; CP/M INPUT/OUTPUT SERVICE ROUTINE
+; RETURN ADDRESS IS ON STACK
+; RETURNS TO CALLER OF CIN OR COUT
+;----------------------------------------------------------
+IOS:
+   LHLD 01H
+   DAD D
+   PCHL
+   NOP
+   NOP
+   NOP
+   NOP
+STACK:   DS 256          ; 128 LEVEL STACK
+   END                   ; END OF PROGRAM
