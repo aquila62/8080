@@ -60,6 +60,25 @@ where X is an invalid character.
 
 ----------------------------------------------------------
 
+Run hxdmp.com to dump a file in hex and ASCII
+
+Usage:
+
+hxdmp drive:name.ext
+
+Example:
+
+hxdmp eko.com
+hxdmp b:eko.com
+
+This program pauses at the end of every 8 lines of output,
+waiting for a key from the keyboard to continue.  If you
+type CTL-Z during a pause, hxdmp.com goes to end of job.
+The program prints the hexadecimal offset into the file
+for each line of output.
+
+----------------------------------------------------------
+
 Run sieve.com to compute prime numbers from 2 to 2039
 using the Sieve of Eratosthenes algorithm.
 
