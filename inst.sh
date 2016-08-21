@@ -5,3 +5,4 @@ make -f ascii.mak
 make -f hx.mak
 make -f tower.mak
 make -f twr.mak
+make -f sieve.mak

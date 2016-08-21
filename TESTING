@@ -60,6 +60,17 @@ where X is an invalid character.
 
 ----------------------------------------------------------
 
+Run sieve.com to compute prime numbers from 2 to 2039
+using the Sieve of Eratosthenes algorithm.
+
+Usage:
+
+sieve
+
+The output is a list of prime numbers from 2 to 2039.
+
+----------------------------------------------------------
+
 Test the Tower of Hanoi puzzle by running tower.com.
 This program uses the iterative solution to the puzzle.
 See twr.com below for the recursive solution.
