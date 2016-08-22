@@ -1,3 +1,28 @@
+Run typ.com to print a text file to the console
+
+Usage:
+
+typ drive:name.ext
+
+Example:
+
+typ eko.asm
+typ b:eko.asm
+
+The spelling of typ.com avoids a conflict with the CP/M
+type command.  The CP/M type command does not come with
+the yaze package.
+This program pauses at the end of each line, waiting for
+a key from the keyboard to continue.  If you type CTL-Z
+at the keyboard, typ.com goes to end of job.
+typ.com expects a CTL-Z to signal the end of the text file.
+CTL-Z is 01a in hex.
+If the text file uses a UNIX end of line character, the program
+converts the end of line character to a CP/M end of line
+sequence (13 followed by 10).
+
+----------------------------------------------------------
+
 Test eko.com to see how the cout and cin interface work.
 
 Usage:

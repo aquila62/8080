@@ -4,6 +4,7 @@ make -f eko.mak
 make -f ascii.mak
 make -f hx.mak
 make -f hxdmp.mak
+make -f typ.mak
 make -f tower.mak
 make -f twr.mak
 make -f sieve.mak
