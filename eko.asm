@@ -38,13 +38,16 @@ EOJ:
 CIN:
    PUSH B
    PUSH D
+   PUSH H
    LXI D,KCIN
    CALL IOS
+   POP H
    POP D
    POP B
    ; RETURNS CHARACTER IN REG A
    RET
 COUT:
+   PUSH PSW
    PUSH B
    PUSH D
    PUSH H
@@ -54,6 +57,7 @@ COUT:
    POP H
    POP D
    POP B
+   POP PSW
    RET
 IOS:
    LHLD 01H
