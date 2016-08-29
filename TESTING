@@ -173,6 +173,64 @@ For example, for 5 disks, the total number of moves is 31.
 
 ----------------------------------------------------------
 
+There are three programs in this repository for calculating
+a 16 bit cyclic redundancy check.  The CRC used here is
+the CCITT CRC.
+
+Two programs calculate a CRC with a table.
+
+* crc16.asm - calculate a CRC for a parameter string
+
+* crc16f.asm - calculate a CRC for an input file
+
+One program calculates a CRC without a table.
+
+* crcnt.asm - calculate a CRC for a parameter string
+
+Usage:
+
+crc16 string
+
+Example:
+
+crc16 123456780
+
+---------------
+
+Usage:
+
+crcnt string
+
+Example:
+
+crcnt 123456780
+
+---------------
+
+Usage:
+
+crc16f filename
+
+Example:
+
+crc16f eko.com
+
+---------------
+
+The output of each program is a 16 bit CRC in hex.
+
+One other program, crctbl.c, builds a CRC table to
+include in an 8080 assembler program.  The output of
+this program is the CCITT table, consisting of a label
+followed by 256 DW statements.  Run this program under
+Linux.
+
+Usage:
+
+crctbl >crctbl.inc
+
+----------------------------------------------------------
+
 See INSTALL for installing this repository on your computer.
 
 See README.8080 for general information about this repository.
