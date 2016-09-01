@@ -173,6 +173,18 @@ For example, for 5 disks, the total number of moves is 31.
 
 ----------------------------------------------------------
 
+Solve the unbounded knapsack puzzle by running knap.
+
+Usage:
+
+knap
+
+The program prints the state of each maximum reached.
+There are four maximum solutions to this puzzle.
+All four solutions are correct.
+
+---------------------------------------------------------------
+
 There are three programs in this repository for calculating
 a 16 bit cyclic redundancy check.  The CRC used here is
 the CCITT CRC.
